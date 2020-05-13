@@ -1,0 +1,41 @@
+spring:
+  # 多环境配置文件
+  profiles:
+    active: @package.environment@
+  # 服务名称
+  application:
+    name: lottery-server
+
+# mybatis: 
+  # mapperLocations: classpath:/mapper/**/*.xml
+  # mapperLocations: com/l/mapper/**/xml/*.xml
+  # typeAliasesPackage: com.l.domain
+  
+mybatis-plus:
+  # mapper-locations: classpath:/mapper/**/*.xml
+  mapper-locations: com/l/mapper/*.xml
+  type-aliases-package: com.l.bean
+  global-config:
+    # 主键类型  0:"数据库ID自增", 1:"用户输入ID",2:"全局唯一ID (数字类型唯一ID)", 3:"全局唯一ID UUID";
+    id-type: 1
+    # 字段策略 0:"忽略判断",1:"非 NULL 判断"),2:"非空判断"
+    field-strategy: 2
+    # 驼峰下划线转换
+    db-column-underline: true
+    # 刷新mapper 调试神器
+    refresh-mapper: true
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: false
+      
+
+
+  
+
+    
+    
+    
+    
+    
+    
+    

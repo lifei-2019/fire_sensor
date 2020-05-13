@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>设备信息</title>
+
+    <!-- Bootstrap -->
+    <link href="/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <style type="text/css">
+        .layui-form {
+            padding-top: 20px;
+            padding-right: 40px;
+        }
+    </style>
+    <script type="text/javascript" src="/js/jquery-1.9.1.js"></script>
+    <script type="text/javascript" src="/layui/layui.js"></script>
+
+    <script>
+        layui.use('form', function () {
+            var form = layui.form;
+
+            $.ajax({
+                url: "/model/getParam",
+                type: "GET",
+                success: function (data) {
+                    //表单初始赋值
+                    form.val('example', {
+                        "factor": data.factor,
+                        "minHeight": data.minHeight,
+                        "area": data.area,
+                        "interval": data.interval,
+                        "buildHeight": data.buildHeight
+                    });
+                }
+            });
+
+            //监听提交
+            form.on('submit(formModel)', function (data) {
+
+                /*var factor = data.field.factor;
+                var minHeight = data.field.minHeight;
+                var area = data.field.area;
+                var interval = data.field.interval;
+                var buildHeight = data.field.buildHeight;*/
+
+                $.ajax({
+                    url: "/model/updateParam",
+                    type: "POST",
+                    data: data.field,
+                    success: function (data) {
+                        if (data) {
+                            layer.alert("修改模型成功");
+                        } else {
+                            layer.alert("修改模型失败");
+                        }
+                    }
+                });
+                return false;
+            });
+        });
+    </script>
+</head>
+<body>
+<div style="width: 50%;float: left">
+<form class="layui-form" lay-filter="example" style="width: 400px">
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">α--增长因子</label>
+        <div class="layui-input-block">
+            <input type="text" name="factor" autocomplete="off" class="layui-input"/>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">Z--最低高度</label>
+        <div class="layui-input-block">
+            <input type="text" name="minHeight" autocomplete="off" class="layui-input"/>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">A----面积</label>
+        <div class="layui-input-block">
+            <input type="text" name="area" autocomplete="off" class="layui-input"/>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">t--时间间隔</label>
+        <div class="layui-input-block">
+            <input type="text" name="interval" autocomplete="off" class="layui-input"/>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">H--房屋高度</label>
+        <div class="layui-input-block">
+            <input type="text" name="buildHeight" autocomplete="off" class="layui-input"/>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit="" lay-filter="formModel">保存</button>
+        </div>
+    </div>
+</form>
+</div>
+<div style="float: right;width: 50%">
+    <img src="/imgs/formula.jpg"/>
+    <div style="font-size:18px;float:left">α--增长因子；Z--最低高度；</div>
+    <div style="font-size:18px;clear:both">A--面积；t--时间间隔；H--房屋高度；</div>
+    <div style="font-size:18px;clear:both">ρ--浓度；T--温度；D--湿度。</div>
+
+</div>
+
+</body>
+</html>

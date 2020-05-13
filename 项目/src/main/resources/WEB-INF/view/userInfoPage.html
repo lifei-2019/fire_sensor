@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>设备信息</title>
+
+    <!-- Bootstrap -->
+    <link href="/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <style type="text/css">
+        .layui-form {
+            padding-top: 20px;
+            padding-right: 40px;
+        }
+    </style>
+    <script type="text/javascript" src="/js/jquery-1.9.1.js"></script>
+    <script type="text/javascript" src="/layui/layui.js"></script>
+
+    <script>
+        layui.use('form', function () {
+            var form = layui.form;
+
+            $.ajax({
+                url: "/user/sessionUser",
+                type: "GET",
+                success: function (data) {
+                    //表单初始赋值
+                    form.val('example', {
+                        "id": data.id,
+                        "userName": data.userName
+                    });
+                }
+            });
+
+            //监听提交
+            form.on('submit(formUserInfo)', function (data) {
+
+                var newPassword = data.field.newPassword;
+                var confirmNewPassword = data.field.confirmNewPassword;
+
+                if (newPassword == '' || confirmNewPassword == '' || newPassword != confirmNewPassword) {
+                    layer.msg("两次密码输入不一致", {time: 2000});
+                    return false;
+                }
+                $.ajax({
+                    url: "/user/updateUser",
+                    type: "POST",
+                    data: data.field,
+                    success: function (data) {
+                        if (data) {
+                            layer.msg("修改密码成功",{time: 2000},function () {
+                                window.parent.location.href = '/loginPage';
+                            });
+                        } else {
+                            layer.alert("修改密码失败");
+                        }
+                    }
+                });
+                return false;
+            });
+        });
+    </script>
+</head>
+<body>
+
+<form class="layui-form" lay-filter="example" style="width: 400px">
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">用户名称</label>
+        <div class="layui-input-block">
+            <input type="hidden" name="id" class="layui-input"/>
+            <input type="text" name="userName" class="layui-input"/>
+        </div>
+    </div>
+    <!--<div class="layui-form-item">
+        <label class="layui-form-label">原始密码</label>
+        <div class="layui-input-block">
+            <input type="password" name="password" autocomplete="off" class="layui-input"/>
+        </div>
+    </div>-->
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">新密码</label>
+        <div class="layui-input-block">
+            <input type="password" name="newPassword" autocomplete="off" class="layui-input"/>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">确认新密码</label>
+        <div class="layui-input-block">
+            <input type="password" name="confirmNewPassword" autocomplete="off" class="layui-input"/>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit="" lay-filter="formUserInfo">修改</button>
+        </div>
+    </div>
+</form>
+
+</body>
+</html>

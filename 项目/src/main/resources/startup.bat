@@ -1,0 +1,1 @@
+java -jar sensor.jar --spring.profiles.active=test

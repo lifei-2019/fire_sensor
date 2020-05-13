@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>主页</title>
+
+    <!-- Bootstrap -->
+    <!--<link href="../../static/layui/css/layui.css" rel="stylesheet" type="text/css"/>-->
+    <link href="/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <style type="text/css">
+        .main{
+            height: 100%;
+        }
+    </style>
+    <script type="text/javascript" src="/js/jquery-1.9.1.js"></script>
+   <!-- <script type="text/javascript" src="../../static/layui/layui.js"></script>-->
+    <script type="text/javascript" src="/layui/layui.js"></script>
+
+    <script type="application/javascript">
+
+        $(function () {
+            $.ajax({
+                url: "/user/sessionUser",
+                type: "GET",
+                success: function (data) {
+                    $("#userName").text(data.userName);
+                }
+            });
+        });
+
+    </script>
+
+    <script type="application/javascript">
+        layui.use('element', function () {
+            var $ = layui.jquery
+                , element = layui.element; //Tab的切换功能，切换事件监听等，需要依赖element模块
+
+
+            element.tabAdd('demo', {
+                title: '智能预警' //用于演示
+                ,
+                content: '<iframe style="width: 100%;height: 100%;min-height: 700px;" frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="auto" allowtransparency="yes" src="/warning"></iframe>'
+                ,
+                id: 1001 //实际使用一般是规定好的id，这里以时间戳模拟下
+            })
+            element.tabChange('demo', 1001); //切换到当前点击的页面
+
+            //触发事件
+            var active = {
+                tabAdd: function () {
+                    //新增一个Tab项
+                    var htmlurl = $(this).attr('data-url');
+                    var mytitle = $(this).attr('mytitle');
+                    var dataid = $(this).attr('data-id');
+                    //先判断是否已经有了tab
+                    var arrayObj = new Array();　//创建一个数组  
+                    $(".layui-tab-title").find('li').each(function () {
+                        var y = $(this).attr("lay-id");
+                        arrayObj.push(y);
+                    });
+                    var have = $.inArray(dataid, arrayObj);  //返回 3,
+                    if (have >= 0) {
+                        //tab已有标签
+                        element.tabChange('demo', dataid); //切换到当前点击的页面
+                    } else {
+                        //没有相同tab
+                        element.tabAdd('demo', {
+                            title: mytitle
+                            ,
+                            content: '<iframe style="width: 100%;height: 100%;min-height: 700px;" frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="auto" allowtransparency="yes" src="'+ htmlurl +'"></iframe>'
+                            ,
+                            id: dataid //实际使用一般是规定好的id，这里以时间戳模拟下
+                        })
+                        element.tabChange('demo', dataid); //切换到当前点击的页面
+                    }
+                }
+            };
+
+
+            $(".site-demo-active").click(function () {
+                var type = "tabAdd";
+                var othis = $(this);
+                active[type] ? active[type].call(this, othis) : '';
+            });
+        });
+    </script>
+
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo">面向物联网的多传感器火灾报警系统</div>
+        <!-- 头部区域（可配合layui已有的水平导航） -->
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                欢迎，<span style="color: #FF00FF" id="userName"></span>&nbsp;<span style="color: #007DDB" onclick="location.href = '/user/exit'">退出</span>
+            </li>
+            <!--<li class="layui-nav-item"><a href="">退了</a></li>-->
+        </ul>
+    </div>
+
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <ul class="layui-nav layui-nav-tree" lay-filter="test">
+                <li class="layui-nav-item layui-nav-itemed">
+                    <a class="site-demo-active" data-id="1001" data-type="tabAdd" data-url="/warning"
+                       mytitle="智能预警">智能预警</a>
+                </li>
+                <li class="layui-nav-item">
+                    <a class="site-demo-active" data-id="1002" data-type="tabAdd" data-url="/modelPage"
+                       mytitle="模型管理">模型管理</a>
+                </li>
+                <li class="layui-nav-item">
+                    <a class="site-demo-active" data-id="1003" data-type="tabAdd" data-url="/device"
+                       mytitle="系统设置">系统设置</a>
+                </li>
+                <li class="layui-nav-item">
+                    <a class="site-demo-active" data-id="1004" data-type="tabAdd" data-url="/userInfo"
+                       mytitle="个人信息">个人信息</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="layui-body main">
+        <div class="layui-tab" lay-filter="demo" lay-allowclose="true">
+            <ul class="layui-tab-title">
+            </ul>
+            <div class="layui-tab-content">
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

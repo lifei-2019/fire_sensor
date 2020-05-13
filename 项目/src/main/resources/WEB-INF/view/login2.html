@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>login</title>
+
+    <!-- Bootstrap -->
+    <link href="../../css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+    <link href="/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <style type="text/css">
+        .form-bg{
+            background: #00b4ef;
+        }
+        .form-horizontal{
+            background: #fff;
+            padding-bottom: 40px;
+            border-radius: 15px;
+            text-align: center;
+        }
+        .form-horizontal .heading{
+            display: block;
+            font-size: 35px;
+            font-weight: 700;
+            padding: 35px 0;
+            border-bottom: 1px solid #f0f0f0;
+            margin-bottom: 30px;
+        }
+        .form-horizontal .form-group{
+            padding: 0 40px;
+            margin: 0 0 25px 0;
+            position: relative;
+        }
+        .form-horizontal .form-control{
+            background: #f0f0f0;
+            border: none;
+            border-radius: 20px;
+            box-shadow: none;
+            padding: 0 20px 0 45px;
+            height: 40px;
+            transition: all 0.3s ease 0s;
+        }
+        .form-horizontal .form-control:focus{
+            background: #e0e0e0;
+            box-shadow: none;
+            outline: 0 none;
+        }
+        .form-horizontal .form-group i{
+            position: absolute;
+            top: 12px;
+            left: 60px;
+            font-size: 17px;
+            color: #c8c8c8;
+            transition : all 0.5s ease 0s;
+        }
+        .form-horizontal .form-control:focus + i{
+            color: #00b4ef;
+        }
+        .form-horizontal .fa-question-circle{
+            display: inline-block;
+            position: absolute;
+            top: 12px;
+            right: 60px;
+            font-size: 20px;
+            color: #808080;
+            transition: all 0.5s ease 0s;
+        }
+        .form-horizontal .fa-question-circle:hover{
+            color: #000;
+        }
+        .form-horizontal .main-checkbox{
+            float: left;
+            width: 20px;
+            height: 20px;
+            background: #11a3fc;
+            border-radius: 50%;
+            position: relative;
+            margin: 5px 0 0 5px;
+            border: 1px solid #11a3fc;
+        }
+        .form-horizontal .main-checkbox label{
+            width: 20px;
+            height: 20px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            cursor: pointer;
+        }
+        .form-horizontal .main-checkbox label:after{
+            content: "";
+            width: 10px;
+            height: 5px;
+            position: absolute;
+            top: 5px;
+            left: 4px;
+            border: 3px solid #fff;
+            border-top: none;
+            border-right: none;
+            background: transparent;
+            opacity: 0;
+            -webkit-transform: rotate(-45deg);
+            transform: rotate(-45deg);
+        }
+        .form-horizontal .main-checkbox input[type=checkbox]{
+            visibility: hidden;
+        }
+        .form-horizontal .main-checkbox input[type=checkbox]:checked + label:after{
+            opacity: 1;
+        }
+
+        #register-form{
+            display: none;
+        }
+
+        @media only screen and (max-width: 479px){
+            .form-horizontal .form-group{
+                padding: 0 25px;
+            }
+            .form-horizontal .form-group i{
+                left: 45px;
+            }
+            .form-horizontal .btn{
+                padding: 10px 20px;
+            }
+        }
+    </style>
+    <script type="text/javascript" src="/js/jquery-1.9.1.js"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/layui/layui.js"></script>
+
+    <script type="application/javascript">
+
+        $(function(){
+            $("#register-btn").click(function(){
+                alert(1);
+                $("#register-form").show();
+                $("#login-form").hide();
+            });
+
+            $("#cancel").click(function(){
+                $("#register-form").hide();
+                $("#login-form").show();
+            });
+
+            $("#login-btn").click(function(){
+                var userName = $("#userName").val();
+                var password = $("#password").val();
+                if(userName == ''){
+                    alert("用户名不能为空！");
+                    return;
+                }
+                if(password == ''){
+                    alert("密码不能为空！");
+                    return;
+                }
+                $.ajax({
+                    url: "/user/login",
+                    type: "POST",
+                    data: {"userName": userName,"password":password},
+                    success: function (data) {
+                        if(data){
+                            location.href = "/main";
+                        }else{
+                            alert("用户名或密码错误！");
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-offset-3 col-md-6">
+                <form class="form-horizontal form-bg" id="login-form">
+                    <span class="heading">面向物联网的多传感器火灾报警系统</span>
+                    <div class="form-group">
+                        <input type="email" class="form-control" id="userName" placeholder="用户名"/>
+                        <i class="fa fa-user"></i>
+                    </div>
+                    <div class="form-group help">
+                        <input type="password" class="form-control" id="password" placeholder="密　码"/>
+                        <i class="fa fa-lock"></i>
+                        <a href="#" class="fa fa-question-circle"></a>
+                    </div>
+                    <div class="form-group">
+                        <button type="button" class="btn btn-info" id="register-btn">注册</button>
+                        <button type="button" class="btn btn-success" id = "login-btn">登录</button>
+                    </div>
+                </form>
+                <form class="form-horizontal form-bg" id="register-form">
+                    <span class="heading">面向物联网的多传感器火灾报警系统</span>
+                    <div class="form-group">
+                        <input type="email" class="form-control" id="userName1" placeholder="用户名"/>
+                        <i class="fa fa-user"></i>
+                    </div>
+                    <div class="form-group help">
+                        <input type="password" class="form-control" id="password1" placeholder="密　码"/>
+                        <i class="fa fa-lock"></i>
+                        <a href="#" class="fa fa-question-circle"></a>
+                    </div>
+                    <div class="form-group help">
+                        <input type="password" class="form-control" id="password2" placeholder="确认密码"/>
+                        <i class="fa fa-lock"></i>
+                        <a href="#" class="fa fa-question-circle"></a>
+                    </div>
+                    <div class="form-group">
+                        <button type="button" class="btn btn-info" id="confirm">确认</button>
+                        <button type="button" class="btn btn-success" id="cancel">取消</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

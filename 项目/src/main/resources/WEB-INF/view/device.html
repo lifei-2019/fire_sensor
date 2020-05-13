@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>设备信息</title>
+
+    <!-- Bootstrap -->
+    <link href="/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <style type="text/css">
+
+    </style>
+    <script type="text/javascript" src="/js/jquery-1.9.1.js"></script>
+    <script type="text/javascript" src="/js/date.js"></script>
+    <script type="text/javascript" src="/layui/layui.js"></script>
+
+    <script type="text/html" id="barDevice">
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    </script>
+
+
+    <script>
+        layui.use('table', function () {
+            var table = layui.table;
+
+            var tableIns = table.render({
+                elem: '#deviceTable',
+                url: '/device/getDeviceList',
+                request: {
+                    pageName: 'pageNum',
+                    limitName: 'pageSize'
+                },
+                cellMinWidth: 80, //全局定义常规单元格的最小宽度，layui 2.2.1 新增,
+                cols: [[
+                    /*{field:'id', width:80, title: 'ID', sort: true}*/
+                    {field: 'id', width: 80, title: 'ID'}
+                    , {field: 'deviceName', title: '设备名称'}
+                    , {field: 'deviceType', title: '设备类型'}
+                    , {field: 'createUser', title: '创建人'}
+                    , {field: 'createTime',width: 200, title: '创建时间', templet: function(d) {return createTime(d.createTime)}}
+                    , {fixed: 'right', width: 100, align: 'center', toolbar: '#barDevice'}
+                ]],
+                page: true
+            });
+
+            //监听工具条
+            table.on('tool(device)', function (obj) {
+                var delId = obj.data.id;
+                console.log(delId);
+                if (obj.event === 'del') {
+                    layer.confirm('是否删除？', function (index) {
+
+                        $.ajax({
+                            url: "/device/delDevice",
+                            type: "POST",
+                            data: {"id": delId},
+                            success: function (data) {
+                                if (data) {
+                                    layer.msg("删除成功", {time: 2000});
+                                    tableIns.reload();
+                                }else{
+                                    layer.msg("删除失败", {time: 2000});
+                                }
+                            }
+                        });
+                        layer.close(index);
+                    });
+                }
+            });
+
+        });
+    </script>
+
+    <script type="application/javascript">
+
+        layui.use('layer', function () { //独立版的layer无需执行这一句
+            var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
+
+            //触发事件
+            var active = {
+                offset: function (othis) {
+                    var type = othis.data('type')
+                        , text = othis.text();
+
+                    layer.open({
+                        type: 2
+                        , title: '添加设备'
+                        , content: ['/addDevicePage', 'no']
+                        , area: ['460px', '260px']
+                    });
+                }
+            };
+
+            $('.layui-btn').on('click', function () {
+                var othis = $(this), method = othis.data('method');
+                active[method] ? active[method].call(this, othis) : '';
+            });
+
+        });
+
+    </script>
+
+</head>
+<body>
+<button data-method="offset" data-type="auto" class="layui-btn layui-btn-normal">添加</button>
+<table class="layui-hide" id="deviceTable" lay-filter="device"></table>
+</body>
+</html>

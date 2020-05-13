@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>register</title>
+
+    <link href="/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <style type="text/css">
+        .window{
+            width: 600px;
+            position: absolute;
+            margin-left: -300px;
+            margin-top: -80px;
+            top: 30%;
+            left: 50%;
+            display: block;
+            z-index: 2000;
+
+        }
+        #body{
+            background-image: url("/imgs/bg.jpg");
+        }
+    </style>
+    <script type="text/javascript" src="/js/jquery-1.9.1.js"></script>
+    <script type="text/javascript" src="/layui/layui.js"></script>
+
+    <script type="application/javascript">
+        layui.use('form', function () {
+            var form = layui.form;
+            //监听提交
+            form.on('submit(register)', function (data) {
+                $.ajax({
+                    url: "/user/addUser",
+                    type: "POST",
+                    data: data.field,
+                    success: function (data) {
+                        if (data) {
+                            layer.msg("注册成功", {time: 1000}, function(){
+                                location.href = "/loginPage";
+                            });
+                        } else {
+                            layer.msg("注册失败", {time: 1000});
+                        }
+                    }
+                });
+                return false;
+            });
+        });
+
+
+    </script>
+
+</head>
+
+<body id="body">
+<div class="window">
+    <div style="text-align: center;padding-bottom: 60px">
+        <span style="font-size: 36px;color: #7B68EE">面向物联网的多传感器火灾报警系统</span>
+    </div>
+    <form class="layui-form"  lay-filter="example" style="width: 400px;margin-left: 100px">
+        <div class="layui-form-item" style="margin-right: 100px;margin-top: 20px;">
+            <label class="layui-form-label" style="color: #1E90FF">用户名：</label>
+            <div class="layui-input-block">
+                <input type="text" name="userName" required="required" lay-verify="required" placeholder="请输入用户名" autocomplete="off"
+                       class="layui-input"/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" style="color: #1E90FF">密&nbsp;&nbsp;&nbsp;&nbsp;码：</label>
+            <div class="layui-input-inline">
+                <input type="password" name="password" required="required" lay-verify="required" placeholder="请输入密码"
+                       autocomplete="off" class="layui-input"/>
+            </div>
+        </div>
+        <div class="layui-form-item" style="padding-top: 20px;">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit="" lay-filter="register">提&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;交</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+</body>
+
+</html>

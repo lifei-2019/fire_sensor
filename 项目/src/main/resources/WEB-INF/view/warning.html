@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>主页</title>
+
+    <!-- Bootstrap -->
+    <link href="/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <style type="text/css">
+
+    </style>
+    <script type="text/javascript" src="/js/jquery-1.9.1.js"></script>
+    <script type="text/javascript" src="/js/date.js"></script>
+    <script type="text/javascript" src="/layui/layui.js"></script>
+
+    <script>
+        layui.use('table', function () {
+            var table = layui.table;
+            var state = false;
+            var tableIns = table.render({
+                elem: '#fireTable',
+                url: '/fire/getFireList',
+                cellMinWidth: 80, //全局定义常规单元格的最小宽度，layui 2.2.1 新增,
+                cols: [[
+                    /*{field:'id', width:80, title: 'ID', sort: true}*/
+                    {field: 'id', width: 80, title: 'ID'}
+                    , {field: 'fireTemp', title: '温度'}
+                    , {field: 'fireHum', title: '湿度'}
+                    , {field: 'fireFog', title: '浓度'}
+                    , {field: 'state', width: 160, title: '预警状态', templet: function (d) {
+                            if (d.state) {
+                                state = true;
+                                return '<span class="layui-badge-dot warning"></span>';
+                            } else {
+                                return '<span class="layui-badge-dot layui-bg-green"></span>';
+                            }
+                        }
+                    }
+                    , {
+                        field: 'createTime', width: 200, title: '创建时间', templet: function (d) {
+                            return createTime(d.createTime)
+                        }
+                    }
+                ]],
+                done: function(res, curr, count){
+                    $("table tr").each(function(){
+                        var warning=$(this).find("span").is('.warning');
+                        console.log(warning);
+                        if(warning){
+                            $(this).css("background-color","#FF0000");
+                        }
+                    });
+                    var status = false;
+                    //如果是异步请求数据方式，res即为你接口返回的信息。
+                    //如果是直接赋值的方式，res即为：{data: [], count: 99} data为当前页数据、count为数据总长度
+                    $.each(res.data, function(i,d){
+                        if(d.state){
+                            status = true;
+                            return false;
+                        }
+                    });
+                    if(status){
+                        $("#audio").get(0).play();
+                    }
+                }
+            });
+
+            setInterval(function () {
+                tableIns.reload();
+            }, 2000);
+
+        });
+    </script>
+
+</head>
+<body>
+<div>
+    <audio id="audio">
+        <source src="/music/music.mp3"/>
+    </audio>
+</div>
+<div>
+<table class="layui-hide" id="fireTable"></table>
+</div>
+
+</body>
+</html>
